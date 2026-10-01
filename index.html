@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>omonma — 生まれた日から、ともに育つ家具。</title>
+  <meta name="description" content="子どもと育つ、安心の一生モノ家具。木工作家・造船作家が手がける国産家具ブランド omonma。">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Noto+Sans+JP:wght@400;500&display=swap">
+  <style>
+:root {
+  --bg: #FAF7F2; --bg-alt: #F2EDE3; --bg-dark: #1C1710;
+  --fg: #1C1710; --fg-mid: #5A5248; --fg-dim: #9C948A;
+  --accent: #8A6840; --accent-lt: #B8935A;
+  --border: #DDD5C8;
+  --nav-h: 64px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161210; --bg-alt: #1E1916; --bg-dark: #0C0A08;
+    --fg: #EDE8DC; --fg-mid: #B0A898; --fg-dim: #6A6058;
+    --accent: #C8A060; --accent-lt: #E4BC80;
+    --border: #2C2820;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161210; --bg-alt: #1E1916; --bg-dark: #0C0A08;
+  --fg: #EDE8DC; --fg-mid: #B0A898; --fg-dim: #6A6058;
+  --accent: #C8A060; --accent-lt: #E4BC80;
+  --border: #2C2820;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: 'Noto Sans JP', system-ui, sans-serif;
+  font-weight: 400; line-height: 1.8;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Nav ── */
+.site-nav {
+  position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding-inline: clamp(1rem, 5vw, 3rem);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+.nav-brand img { height: 66px; width: auto; display: block; }
+.nav-links { list-style: none; display: flex; gap: 2.5rem; }
+.nav-links a {
+  font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--fg-mid); transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--accent); }
+.nav-toggle {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.nav-toggle span { display: block; width: 24px; height: 1.5px; background: var(--fg); }
+@media (max-width: 640px) {
+  .nav-toggle { display: flex; }
+  .nav-links {
+    position: fixed; inset: var(--nav-h) 0 0 0;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 2rem; background: var(--bg);
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .nav-links.open { opacity: 1; pointer-events: all; }
+  .nav-links a { font-size: 1rem; }
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative; height: 100svh; min-height: 580px;
+  display: flex; align-items: flex-end; overflow: hidden;
+}
+.hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; object-position: center;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(12,8,4,0.75) 0%, rgba(12,8,4,0.05) 55%);
+}
+.hero-text {
+  position: relative; z-index: 1;
+  padding-inline: clamp(1.5rem, 7vw, 6rem);
+  padding-bottom: clamp(3rem, 8vh, 5rem);
+  color: #EDE8DC;
+}
+.hero-text h1 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: clamp(2.2rem, 6.5vw, 5rem);
+  font-weight: 400; line-height: 1.2;
+  margin-bottom: 1.2rem;
+}
+.hero-text p {
+  font-size: clamp(0.85rem, 1.6vw, 0.98rem);
+  font-weight: 300; max-width: 40ch; opacity: 0.75; line-height: 2;
+}
+.hero-cta {
+  display: inline-block; margin-top: 2rem;
+  padding: 0.8rem 2.4rem;
+  border: 1px solid rgba(237,232,220,0.5);
+  color: #EDE8DC;
+  font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
+  transition: background 0.25s, border-color 0.25s;
+}
+.hero-cta:hover {
+  background: rgba(237,232,220,0.12); border-color: rgba(237,232,220,0.8);
+}
+
+/* ── Section base ── */
+.section {
+  padding-block: clamp(4rem, 10vh, 7rem);
+  padding-inline: clamp(1.5rem, 6vw, 5rem);
+}
+.section-label {
+  font-size: 0.66rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--fg-dim); margin-bottom: 0.5rem;
+}
+.section-heading {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 400; line-height: 1.25;
+  text-wrap: balance; overflow-wrap: anywhere;
+}
+
+/* ── Story ── */
+#story {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.story-catch {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 400; line-height: 1.4;
+  margin-bottom: 3rem;
+  text-wrap: balance; max-width: 600px;
+}
+.story-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+  max-width: 900px;
+}
+.story-row + .story-row { margin-top: clamp(2.5rem, 5vw, 4rem); }
+.story-row--reverse { direction: rtl; }
+.story-row--reverse > * { direction: ltr; }
+.story-row-text {
+  min-width: 0;
+  font-size: clamp(0.88rem, 1.4vw, 0.96rem);
+  color: var(--fg-mid); line-height: 2;
+}
+.story-row-img {
+  min-width: 0;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.story-row-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 640px) {
+  .story-row { grid-template-columns: 1fr; }
+  .story-row--reverse { direction: ltr; }
+  .story-row-img { aspect-ratio: 16/9; }
+}
+
+/* ── Collection ── */
+#items { background: var(--bg); }
+.items-header { margin-bottom: 2.5rem; }
+.items-lead {
+  font-size: clamp(0.88rem, 1.4vw, 0.96rem);
+  color: var(--fg-mid); line-height: 1.9;
+  margin-top: 0.6rem; max-width: 520px;
+  overflow-wrap: anywhere;
+}
+
+/* Slideshow */
+.slideshow {
+  position: relative;
+  aspect-ratio: 16/7;
+  overflow: hidden;
+  background: var(--bg-alt);
+  margin-bottom: 3rem;
+}
+@media (max-width: 640px) { .slideshow { aspect-ratio: 4/3; } }
+.slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease; }
+.slide.is-active { opacity: 1; }
+.slide img { width: 100%; height: 100%; object-fit: cover; }
+.slide-dots {
+  position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 0.5rem; z-index: 2;
+}
+.slide-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%; border: 1px solid rgba(237,232,220,0.6);
+  background: transparent; cursor: pointer; padding: 0;
+  transition: background 0.3s;
+}
+.slide-dot.is-active { background: rgba(237,232,220,0.9); }
+.slide-prev, .slide-next {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(12,8,4,0.35); border: none; color: #EDE8DC;
+  width: 40px; height: 40px; cursor: pointer; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; transition: background 0.2s;
+}
+.slide-prev { left: 1rem; }
+.slide-next { right: 1rem; }
+.slide-prev:hover, .slide-next:hover { background: rgba(12,8,4,0.6); }
+
+/* Finish cards */
+.finish-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border);
+}
+@media (max-width: 640px) { .finish-grid { grid-template-columns: 1fr; } }
+.finish-card { display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+.finish-card.is-premium { background: var(--bg-alt); }
+.finish-card-img { aspect-ratio: 1/1; overflow: hidden; }
+.finish-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.finish-card:hover .finish-card-img img { transform: scale(1.05); }
+.finish-card-body { padding: 1.8rem; flex: 1; display: flex; flex-direction: column; gap: 0.75rem; }
+.finish-spec-num {
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.finish-card.is-premium .finish-spec-num { color: var(--accent); }
+.finish-card-body h3 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: clamp(1.4rem, 2vw, 1.7rem); font-weight: 400;
+  line-height: 1.2; color: var(--fg);
+}
+.finish-desc { font-size: 0.88rem; color: var(--fg); line-height: 1.85; opacity: 0.75; }
+.finish-material {
+  font-size: 0.72rem; color: var(--fg-dim); letter-spacing: 0.04em;
+  padding-top: 0.8rem; border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+/* ── Craft ── */
+#craft { background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.craft-body {
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  color: var(--fg-mid); line-height: 2.1;
+  max-width: 620px; margin-top: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+/* ── Promise ── */
+#promise { background: var(--bg-alt); }
+.promise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 2.5rem; margin-top: 3rem;
+}
+.promise-num {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 2rem; font-style: italic; color: var(--accent);
+  margin-bottom: 0.5rem; font-variant-numeric: tabular-nums;
+}
+.promise-item h3 { font-size: 0.9rem; letter-spacing: 0.06em; margin-bottom: 0.6rem; font-weight: 500; }
+.promise-item p { font-size: 0.84rem; color: var(--fg-mid); line-height: 1.9; }
+
+/* ── Experience ── */
+#experience { background: var(--bg); }
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem; margin-top: 3rem;
+}
+.exp-card { border: 1px solid var(--border); padding: 2rem; }
+.exp-card h3 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.2rem; font-style: italic;
+  margin-bottom: 0.8rem; color: var(--accent);
+}
+.exp-card p { font-size: 0.85rem; color: var(--fg-mid); line-height: 1.9; }
+.exp-card .exp-price {
+  margin-top: 1rem;
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.exp-note { font-size: 0.75rem; color: var(--fg-dim); margin-top: 1.5rem; text-align: center; }
+
+.btn-primary {
+  display: inline-block; padding: 0.85rem 2.8rem;
+  border: 1px solid var(--accent); color: var(--accent);
+  font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+  transition: background 0.25s, color 0.25s;
+}
+.btn-primary:hover { background: var(--accent); color: var(--bg); }
+
+/* ── Footer ── */
+#site-footer { background: var(--bg-dark); }
+.site-footer-inner {
+  padding-block: clamp(3rem, 6vh, 4rem);
+  padding-inline: clamp(1.5rem, 6vw, 5rem);
+  text-align: center; color: rgba(237,232,220,0.4);
+}
+.footer-brand img {
+  height: 84px; width: auto; display: block;
+  margin-inline: auto; margin-bottom: 0.3rem;
+  filter: brightness(0) invert(1); opacity: 0.65;
+}
+.footer-tagline { font-size: 0.8rem; margin-bottom: 1.5rem; }
+.footer-nav {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.footer-nav a {
+  font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(237,232,220,0.35); transition: color 0.2s;
+}
+.footer-nav a:hover { color: rgba(237,232,220,0.75); }
+.footer-copy { font-size: 0.68rem; }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero" id="hero-section">
+  <img class="hero-img" src="images/hero.jpg" alt="omonma">
+  <div class="hero-overlay"></div>
+  <div class="hero-text">
+    <h1>子供と育つ、<br>安心の一生モノ家具。</h1>
+    <p>子どもの成長を刻む、一生モノの家具を。<br>傷も汚れも、すべて家族の記憶になります。</p>
+    <a href="#items" class="hero-cta">コレクションを見る</a>
+  </div>
+</section>
+
+<!-- Story -->
+<section class="section" id="story">
+  <p class="section-label">Story</p>
+  <p class="story-catch">おしゃれな家具は、<br>子育て家庭では難しい——<br>その問いから生まれたブランド。</p>
+  <div class="story-row">
+    <div class="story-row-text">
+      <p>「おしゃれな家具がほしいけど、角が尖っていたり、引き出しが勢いよく閉まったり——子どものいる家ではなかなか使えない。」ある日、知人からそんな悩みを聞いたomonmaの創業者であるデザイナーは、国内外で活躍する木工・造船作家の友人と、保育士歴20年の現役保育士に声をかけました。</p>
+    </div>
+    <div class="story-row-img">
+      <img src="images/daily-standard.jpg" alt="omonmaの家具">
+    </div>
+  </div>
+  <div class="story-row story-row--reverse">
+    <div class="story-row-text">
+      <p>三人が議論を重ね、試作を繰り返してつくりあげたひとつの家具。それがomonmaの始まりです。ミッドセンチュリーデザインの美しさを参照しながら、子どものいる家庭でも使えるよう安全への工夫を随所に施した家具ブランドとして、omonmaは誕生しました。</p>
+    </div>
+    <div class="story-row-img">
+      <img src="images/solid-craft.jpg" alt="omonmaの家具 仕上げ">
+    </div>
+  </div>
+</section>
+
+<!-- Items / Collection -->
+<section class="section" id="items">
+  <div class="items-header">
+    <p class="section-label">Collection</p>
+    <h2 class="section-heading">各製品は三つの仕様からお選びいただけます。</h2>
+    <p class="items-lead">形もサイズも同じ家具を、素材と仕上げの違いで3グレードご用意しています。ライフスタイルと予算に合わせてお選びください。</p>
+  </div>
+
+  <!-- Slideshow -->
+  <div class="slideshow" id="slideshow" aria-label="製品スライドショー">
+    <div class="slide is-active">
+      <img src="images/hero.jpg" alt="omonma家具 全容">
+    </div>
+    <div class="slide">
+      <img src="images/daily-standard.jpg" alt="omonma家具 Daily Standard">
+    </div>
+    <div class="slide">
+      <img src="images/solid-craft.jpg" alt="omonma家具 Solid Craft">
+    </div>
+    <div class="slide">
+      <img src="images/heritage-luxury.jpg" alt="omonma家具 Heritage Luxury">
+    </div>
+    <button class="slide-prev" aria-label="前へ">&#8592;</button>
+    <button class="slide-next" aria-label="次へ">&#8594;</button>
+    <div class="slide-dots" role="tablist"></div>
+  </div>
+
+  <!-- Finish cards -->
+  <div class="finish-grid">
+    <div class="finish-card">
+      <div class="finish-card-img">
+        <img src="images/daily-standard.jpg" alt="Daily Standard仕上げ">
+      </div>
+      <div class="finish-card-body">
+        <p class="finish-spec-num">Grade 01</p>
+        <h3>Daily Standard</h3>
+        <p class="finish-desc">表面に木材を薄く貼り合わせた突板合板を使用したエントリーライン。無垢材に比べ軽量で扱いやすく、ウレタン塗装により水や汚れにも強い。「まず試してみたい」という方に。</p>
+        <p class="finish-material">突板合板 × ウレタン塗装</p>
+      </div>
+    </div>
+    <div class="finish-card">
+      <div class="finish-card-img">
+        <img src="images/solid-craft.jpg" alt="Solid Craft仕上げ">
+      </div>
+      <div class="finish-card-body">
+        <p class="finish-spec-num">Grade 02</p>
+        <h3>Solid Craft</h3>
+        <p class="finish-desc">一本の木から削り出した無垢材を使用。木目の美しさと重厚な存在感はそのままに、ウレタン塗装で強固に保護。飲みこぼしや絵の具もさっと拭き取れる、実用性を兼ね備えた本格ライン。</p>
+        <p class="finish-material">無垢材 × ウレタン塗装</p>
+      </div>
+    </div>
+    <div class="finish-card is-premium">
+      <div class="finish-card-img">
+        <img src="images/heritage-luxury.jpg" alt="Heritage Luxury仕上げ">
+      </div>
+      <div class="finish-card-body">
+        <p class="finish-spec-num">Grade 03</p>
+        <h3>Heritage Luxury</h3>
+        <p class="finish-desc">無垢材に自然素材の蜜蝋ワックスを塗り重ねた、omonma最上位の仕上げ。塗装膜を作らず木が呼吸し続けるため、使うほどに艶が深まる。傷がついても自分で補修できる——子どもから、その子どもへと受け継がれる一生モノ。</p>
+        <p class="finish-material">無垢材 × 蜜蝋ワックス</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Craft -->
+<section class="section" id="craft">
+  <p class="section-label">Craftsmanship</p>
+  <h2 class="section-heading">職人の手が、<br>ひとつひとつに宿る。</h2>
+  <p class="craft-body">omonmaの家具はすべて、木工作家・造船作家として国内外で活躍する職人が手がける国産家具です。機械にほとんど頼らず、手仕事で削り、組み、仕上げる。だからこそ生まれる木の表情と、子どもに渡せる強度があります。</p>
+</section>
+
+<!-- Promise -->
+<section class="section" id="promise">
+  <p class="section-label">Promise</p>
+  <h2 class="section-heading">長く付き合える、<br>安心のサポート体制。</h2>
+  <div class="promise-grid">
+    <div class="promise-item">
+      <div class="promise-num">01</div>
+      <h3>1年間無償修理</h3>
+      <p>お届けから1年間、通常使用による不具合は無償で修理いたします。送料のみご負担ください。</p>
+    </div>
+    <div class="promise-item">
+      <div class="promise-num">02</div>
+      <h3>長期メンテナンスサポート</h3>
+      <p>1年以降も有償にて修理・再塗装に対応。定期メンテナンスプランもご用意しています。</p>
+    </div>
+    <div class="promise-item">
+      <div class="promise-num">03</div>
+      <h3>蜜蝋ワックス仕上げ</h3>
+      <p>Heritage Luxuryグレード限定。天然の蜜蝋ワックスで仕上げ。撥水性・メンテナンス性に優れ、ご家庭でのお手入れも簡単です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Experience -->
+<section class="section" id="experience">
+  <p class="section-label">Experience</p>
+  <h2 class="section-heading">工房で、ともにつくる体験。</h2>
+  <div class="exp-grid">
+    <div class="exp-card">
+      <h3>工房見学ツアー</h3>
+      <p>職人の仕事場をご案内します。手道具で木を削る工程、組み手の技、仕上げの丁寧さ——機械に頼らないものづくりの現場を肌で感じてください。</p>
+      <p class="exp-price">要予約 / 日程はお問い合わせください</p>
+    </div>
+    <div class="exp-card">
+      <h3>蜜蝋ワックス塗装体験</h3>
+      <p>ご購入者様限定、1日1組のプライベート体験。ご自身の手で、お子さんの家具に最初の仕上げを施してください。一生の記憶になります。蜜蝋ワックスは天然素材のみですのでお子様も参加できます。</p>
+      <p class="exp-price">購入者限定・1日1組 / 要予約</p>
+    </div>
+  </div>
+  <p class="exp-note">※ いずれも事前予約制です。工房へのアクセスにかかる交通費はご負担ください。</p>
+</section>
+
+<!-- Footer -->
+<footer id="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand"><img src="images/logo.png" alt="omonma"></div>
+    <p class="footer-tagline">暮らしに、木の温度を。</p>
+    <nav class="footer-nav" aria-label="フッターナビ">
+      <a href="#items">コレクション</a>
+      <a href="about.html">ブランドについて</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+    <p class="footer-copy">© 2026 omonma. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+(function () {
+  var el = document.getElementById('slideshow');
+  if (!el) return;
+  var slides = el.querySelectorAll('.slide');
+  var dotsWrap = el.querySelector('.slide-dots');
+  var current = 0;
+  var timer;
+  slides.forEach(function (_, i) {
+    var d = document.createElement('button');
+    d.className = 'slide-dot' + (i === 0 ? ' is-active' : '');
+    d.setAttribute('role', 'tab');
+    d.setAttribute('aria-label', (i + 1) + '枚目');
+    d.addEventListener('click', function () { go(i); });
+    dotsWrap.appendChild(d);
+  });
+  function go(n) {
+    slides[current].classList.remove('is-active');
+    dotsWrap.children[current].classList.remove('is-active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('is-active');
+    dotsWrap.children[current].classList.add('is-active');
+    clearInterval(timer);
+    timer = setInterval(function () { go(current + 1); }, 4500);
+  }
+  el.querySelector('.slide-prev').addEventListener('click', function () { go(current - 1); });
+  el.querySelector('.slide-next').addEventListener('click', function () { go(current + 1); });
+  timer = setInterval(function () { go(current + 1); }, 4500);
+})();
+</script>
+</body>
+</html>
