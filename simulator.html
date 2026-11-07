@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>チェスト サイズシミュレーター — omonma</title>
+<meta name="description" content="omonmaのチェストを、幅・奥行き・段数と仕上げで選んで360°確認。仮のお見積りもその場で表示します。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+/* ── 色：紙・墨・茶の3系統。区切りは線ではなく「面の色の差」と余白で作る ── */
+:root {
+  --bg: #FAF7F2; --face: #EFE8DA; --face-2: #E3DAC8; --bg-dark: #1C1710;
+  --fg: #1C1710; --fg-mid: #5A5248; --fg-dim: #8C8478;
+  --accent: #8A6840;
+  --wood: #B08A5E; --wood-lt: #CBA97E;
+  --head: 'Noto Sans JP', 'Hiragino Sans', system-ui, sans-serif;
+  --body: 'Noto Sans JP', 'Hiragino Sans', system-ui, sans-serif;
+  /* 本サイトのヘッダー・フッター用 */
+  --ink: #2b231c; --en: 'Cormorant Garamond', serif; --ease: cubic-bezier(.22,1,.36,1); --wood-dark: #5a3d27;
+  --nav-h: 76px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161210; --face: #231D18; --face-2: #2E2721; --bg-dark: #0C0A08;
+    --fg: #EDE8DC; --fg-mid: #B0A898; --fg-dim: #8A8074;
+    --accent: #C8A060; --wood: #8A6A44; --wood-lt: #A07F55;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161210; --face: #231D18; --face-2: #2E2721; --bg-dark: #0C0A08;
+  --fg: #EDE8DC; --fg-mid: #B0A898; --fg-dim: #8A8074;
+  --accent: #C8A060; --wood: #8A6A44; --wood-lt: #A07F55;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-bottom: calc(var(--bar-h, 0px) + 12px); }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 1rem;
+  font-weight: 400; line-height: 1.75; line-break: strict;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+p, li, h1 { word-break: auto-phrase; text-wrap: pretty; }
+h1 { text-wrap: balance; }
+.side { --gx: clamp(1rem, 5vw, 4rem); }
+
+/* ── ヘッダー（本サイトと同じ） ── */
+#header{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px clamp(20px,4vw,56px);background:rgba(246,241,233,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--ink);transition:transform .6s var(--ease)}
+#header.hide{transform:translateY(-100%)}
+#header .logo{font-family:var(--en);font-size:1.7rem;letter-spacing:.18em;position:relative;z-index:2;color:var(--ink)}
+#header nav{display:flex;gap:32px;font-size:.8rem;letter-spacing:.12em}
+#header nav a{position:relative;padding:4px 0;color:var(--ink)}
+#header nav a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+#header nav a:hover::after{transform:scaleX(1);transform-origin:left}
+#header .menu-btn{display:none}
+#header.open{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+body.menu-open{overflow:hidden}
+@media(max-width:700px){
+  :root{--nav-h:70px}
+  #header .logo{font-size:1.5rem}
+  #header .menu-btn{display:block;width:44px;height:44px;margin-right:-10px;background:none;border:0;color:inherit;cursor:pointer;position:relative;z-index:2}
+  #header .menu-btn i{position:absolute;left:11px;right:11px;height:1.5px;background:currentColor;transition:transform .5s var(--ease),top .5s var(--ease)}
+  #header .menu-btn i:nth-child(1){top:17px}
+  #header .menu-btn i:nth-child(2){top:26px}
+  #header.open .menu-btn i:nth-child(1){top:21px;transform:rotate(45deg)}
+  #header.open .menu-btn i:nth-child(2){top:21px;transform:rotate(-45deg)}
+  #header nav{position:fixed;inset:0;z-index:1;background:#f6f1e9;color:var(--ink);flex-direction:column;justify-content:center;align-items:center;gap:30px;font-size:1.05rem;letter-spacing:.14em;opacity:0;pointer-events:none;transition:opacity .5s var(--ease)}
+  #header.open nav{opacity:1;pointer-events:auto}
+}
+
+/* ── ページ先頭：見出しだけを大きく ── */
+.page-head { padding: calc(var(--nav-h) + clamp(2rem, 6vh, 3.5rem)) var(--gx, clamp(1rem, 5vw, 4rem)) clamp(1.8rem, 5vh, 3rem); background: var(--face); }
+.page-head-in { max-width: 1180px; margin-inline: auto; }
+.eyebrow { font-family: var(--head); font-size: clamp(1.1rem, 2.4vw, 1.5rem); font-weight: 500; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.4rem; }
+.page-head h1 { font-family: var(--head); font-size: clamp(1.9rem, 7.2vw, 4.4rem); font-weight: 500; line-height: 1.2; letter-spacing: 0.02em; }
+
+/* ── レイアウト：左に大きな3D、右に操作の面 ── */
+.wrap { padding: clamp(1rem, 3vh, 1.6rem) clamp(1rem, 5vw, 4rem) clamp(2.5rem, 6vh, 4rem); }
+.noscript { max-width: 1180px; margin: 0 auto 1rem; color: var(--accent); }
+.layout { max-width: 1180px; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 12px; align-items: start; }
+.col-main, .col-side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+/* 見出し：大きい明朝＋右に小さな単位 */
+.block-title { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-family: var(--head); font-size: clamp(1.4rem, 2.6vw, 1.75rem); font-weight: 500; line-height: 1.3; margin-bottom: 1.1rem; }
+.panel { background: var(--face); padding: clamp(1.1rem, 3vw, 1.6rem); }
+
+/* 3D */
+#stage { position: relative; aspect-ratio: 4/3; background: #e6e1d8; overflow: hidden; touch-action: none; cursor: grab; }
+#stage:active { cursor: grabbing; }
+#stage.no3d { aspect-ratio: auto; height: 9rem; cursor: default; }
+#view { width: 100%; height: 100%; display: block; }
+#stageFallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 2rem; text-align: center; color: var(--fg-mid); background: #e6e1d8; }
+.view-tools { display: flex; gap: 4px; margin-top: 4px; }
+.view-btn {
+  flex: 1 1 auto; background: var(--face); color: var(--fg); border: none; cursor: pointer;
+  padding: 0.85rem 0.6rem; font-size: 0.95rem; white-space: nowrap; transition: background 0.2s, color 0.2s;
+}
+.view-btn:hover { background: var(--face-2); }
+.view-btn.is-active { background: var(--fg); color: var(--bg); }
+
+/* 図面：面だけで描く（線なし） */
+#sheet svg { display: block; margin-inline: auto; }
+.dr-body { fill: var(--wood); }
+.dr-front { fill: var(--wood-lt); }
+.dr-leg { fill: var(--accent); }
+.dr-tx { fill: var(--fg); font-family: var(--head); font-size: 30px; font-weight: 500; }
+
+/* 寸法スライダー：太い棒と角のつまみ。目盛り・最小最大の文字はなし */
+.field + .field { margin-top: 1.5rem; }
+.field-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.2rem; }
+.field-head label, .field-head .lbl { font-size: 1rem; color: var(--fg-mid); }
+.val { font-family: var(--head); font-size: 2.4rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.h-note { margin-top: 0.2rem; font-size: 0.95rem; color: var(--fg-mid); }
+.val small { font-family: var(--body); font-size: 0.95rem; font-weight: 400; color: var(--fg-dim); margin-left: 0.3rem; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 40px; background: transparent; cursor: pointer; margin: 0; display: block; }
+input[type=range]::-webkit-slider-runnable-track { height: 10px; background: linear-gradient(to right, var(--fg) var(--p, 50%), var(--face-2) var(--p, 50%)); }
+input[type=range]::-moz-range-track { height: 10px; background: var(--face-2); }
+input[type=range]::-moz-range-progress { height: 10px; background: var(--fg); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 36px; border-radius: 0; background: var(--accent); border: none; margin-top: -13px; }
+input[type=range]::-moz-range-thumb { width: 18px; height: 36px; border-radius: 0; background: var(--accent); border: none; }
+input[type=range]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 仕上げ：3つの面。選んだ面だけ墨色に反転 */
+.finish-list { display: flex; flex-direction: column; gap: 4px; }
+.grade { position: relative; display: block; padding: 1.1rem 1.3rem; background: var(--face); cursor: pointer; transition: background 0.2s, color 0.2s; }
+.grade:hover { background: var(--face-2); }
+.grade input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.grade:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.g-spec { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 0.6rem; }
+.g-spec i { font-style: normal; font-size: 0.95rem; padding: 0.1rem 0.7rem; background: var(--face-2); }
+.grade:hover .g-spec i { background: var(--bg); }
+.grade.is-active .g-spec i { background: color-mix(in srgb, var(--bg) 18%, transparent); }
+.g-name { font-family: var(--head); font-size: 1.5rem; font-weight: 500; line-height: 1.4; }
+.grade.is-active { background: var(--fg); color: var(--bg); }
+
+/* お届け先：面のセレクト */
+.sel { position: relative; }
+.sel::after { content: ""; position: absolute; right: 1.3rem; top: 50%; width: 16px; height: 10px; background: var(--fg); clip-path: polygon(0 0, 100% 0, 50% 100%); transform: translateY(-50%); pointer-events: none; }
+.sel select { -webkit-appearance: none; appearance: none; width: 100%; border: none; border-radius: 0; background: var(--face); color: var(--fg); font-family: var(--head); font-size: 1.35rem; font-weight: 500; padding: 1.1rem 3rem 1.1rem 1.3rem; cursor: pointer; }
+.sel select:hover { background: var(--face-2); }
+.sel select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 内訳の表：行ごとに面。合計の行だけ濃く */
+.calc { width: 100%; border-collapse: separate; border-spacing: 0 3px; }
+.calc th, .calc td { padding: 0.75rem 1rem; background: var(--bg); font-size: 1rem; font-weight: 400; text-align: left; vertical-align: baseline; }
+.calc td { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.calc tr.sum th, .calc tr.sum td { background: var(--face-2); font-weight: 500; }
+.calc tr.total th, .calc tr.total td { background: var(--fg); color: var(--bg); font-family: var(--head); font-size: 1.2rem; font-weight: 500; }
+
+/* 最終確認：全幅の面 */
+.final { background: var(--face); padding: clamp(2rem, 6vh, 3.5rem) clamp(1rem, 5vw, 4rem) clamp(2.5rem, 7vh, 4rem); }
+.final-in { max-width: 1180px; margin-inline: auto; }
+.final .block-title { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 1.4rem; }
+.final-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.final-panel { background: var(--bg); padding: clamp(1.2rem, 3vw, 1.8rem); }
+.spec > div { display: flex; gap: 1rem; padding: 0.3rem 0; }
+.spec dt { flex: none; width: 4.6rem; color: var(--fg-dim); }
+.spec dd { min-width: 0; font-size: 1.05rem; }
+.f-label { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.8rem; margin-top: 1.4rem; color: var(--fg-mid); }
+.tag { font-size: 0.875rem; padding: 0.05rem 0.6rem; background: var(--face-2); color: var(--fg); }
+.f-price { font-family: var(--head); font-size: clamp(3.2rem, 11vw, 5rem); font-weight: 500; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.f-price .about, .bar-price .about { font-family: var(--body); font-size: 1rem; font-weight: 400; color: var(--fg-dim); margin-right: 0.4rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1.5rem; }
+.btn-primary { display: inline-block; padding: 1rem 1.8rem; border: none; cursor: pointer; font-size: 1.05rem; white-space: nowrap; text-align: center; transition: background 0.2s; }
+.btn-primary { background: var(--fg); color: var(--bg); flex: 1 1 auto; }
+.btn-primary:hover { background: var(--accent); }
+.status:empty { display: none; }
+.status { margin-top: 0.9rem; font-size: 0.95rem; color: var(--fg-mid); line-height: 1.7; }
+#fallbackBox { width: 100%; margin-top: 0.6rem; min-height: 7rem; resize: vertical; background: var(--face); color: var(--fg); border: none; padding: 0.8rem; font: inherit; font-size: 0.95rem; line-height: 1.7; }
+
+/* 固定バー：金額・サイズ・ボタン。アニメーションなし */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; background: var(--bg-dark); color: #EDE8DC; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.bar-in { width: min(1180px, calc(100% - 2 * clamp(1rem, 5vw, 4rem))); margin-inline: auto; }
+.bar-detail { max-height: min(55vh, 460px); overflow-y: auto; padding: 1rem 0 0.4rem; }
+.bar-detail-title { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--head); font-size: 1.3rem; font-weight: 500; margin-bottom: 0.6rem; }
+.bar .calc th, .bar .calc td { background: rgba(237,232,220,0.08); color: #EDE8DC; }
+.bar .calc tr.sum th, .bar .calc tr.sum td { background: rgba(237,232,220,0.16); }
+.bar .calc tr.total th, .bar .calc tr.total td { background: #EDE8DC; color: #1C1710; }
+.bar-strip { padding-top: 0.5rem; font-size: 0.875rem; line-height: 1.5; min-height: calc(0.5rem + 1.5em); }
+.bar-strip .bar-delta:empty::before { content: "\00a0"; }
+.bar-main { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; padding: 0.3rem 0 0.8rem; }
+.bar-info { min-width: 0; flex: 1; }
+.bar-row { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.7rem; font-size: 0.875rem; line-height: 1.55; color: rgba(237,232,220,0.78); font-variant-numeric: tabular-nums; }
+.bar-tag { padding: 0 0.5rem; background: rgba(237,232,220,0.18); color: #EDE8DC; }
+.bar-price { font-family: var(--head); font-size: 2.3rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.bar-price .about { color: rgba(237,232,220,0.6); font-size: 0.9rem; }
+.bar-delta { color: rgba(237,232,220,0.9); }
+.bar-delta.big { color: #fff; font-weight: 700; }
+.bar-actions { display: flex; flex-direction: column; align-items: stretch; gap: 0.15rem; flex: none; }
+.bar-go { display: block; text-align: center; min-height: 48px; padding: 0.75rem 1.1rem; line-height: 1.5; background: #EDE8DC; color: #1C1710; font-size: 1rem; font-weight: 700; white-space: nowrap; }
+.bar-go:hover { background: #fff; }
+.bar-toggle { background: none; border: none; cursor: pointer; font-size: 0.9rem; white-space: nowrap; color: rgba(237,232,220,0.9); text-decoration: underline; text-underline-offset: 0.3em; padding: 0.25rem 0; text-align: center; }
+@media (min-width: 901px) {
+  .bar-actions { flex-direction: row-reverse; align-items: center; gap: 1.6rem; }
+  .bar-go { padding-inline: 2.4rem; }
+}
+
+/* ── スマホ：3D → 寸法 → 仕上げ → 図面 → 最終確認 ── */
+@media (max-width: 900px) {
+  .layout { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+  .col-main, .col-side { display: contents; }
+  .layout > *, .col-main > *, .col-side > * { min-width: 0; }
+  #fig1 { order: 1; } .b-size { order: 2; } .b-finish { order: 3; } .b-ship { order: 4; } #fig2 { order: 5; }
+  .final-grid { grid-template-columns: 1fr; }
+  .view-tools { overflow-x: auto; scrollbar-width: none; }
+  .view-btn { flex: none; padding-inline: 1rem; }
+  .b-finish { padding-block: 0.6rem 0; }
+}
+
+/* ── フッター（本サイトと同じ。下の固定バーの高さぶん余白を足す） ── */
+.site-footer{background:var(--wood-dark);color:#f0e6d6;padding:100px 0 calc(40px + var(--bar-h, 0px));text-align:center}
+.site-footer .logo{font-family:var(--en);font-size:2.4rem;letter-spacing:.18em;margin-bottom:24px}
+.sf-tag{font-family:var(--head);font-size:1.3rem;letter-spacing:.15em;margin-bottom:40px}
+.sf-links{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;font-size:.85rem;letter-spacing:.12em}
+.sf-links a{position:relative}
+.sf-links a::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.sf-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.sf-copy{margin-top:70px;font-size:.72rem;opacity:.6;letter-spacing:.1em}
+</style>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>#header .logo{display:inline-block;line-height:0}#header .logo img.lg,.site-footer .logo img.lg{background:none;object-fit:contain}#header .logo img.lg{height:22px;width:auto;display:block}.site-footer .logo{display:block;line-height:0;margin:0 auto 24px}.site-footer .logo img.lg{height:34px;margin:0 auto}@media(max-width:700px){#header .logo img.lg{height:19px}.site-footer .logo img.lg{height:28px}}</style>
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" class="logo"><img class="lg" src="images/logo-brown.png" alt="omonma"></a>
+  <nav>
+    <a href="index.html#items">コレクション</a>
+    <a href="products.html">商品一覧</a>
+    <a href="https://omonma.jp/about.html">ブランドについて</a>
+    <a href="https://omonma.jp/contact.html">お問い合わせ</a>
+  </nav>
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="メニュー" aria-expanded="false"><i></i><i></i></button>
+</header>
+
+<header class="page-head">
+  <div class="page-head-in">
+    <p class="eyebrow">チェスト</p>
+    <h1>サイズシミュレーター</h1>
+  </div>
+</header>
+
+<main class="wrap">
+  <noscript><p class="noscript">JavaScriptを有効にしてください。</p></noscript>
+
+  <div class="layout">
+
+    <div class="col-main">
+      <figure id="fig1">
+        <div id="stage">
+          <canvas id="view"></canvas>
+          <p id="stageFallback" hidden>3Dを表示できません。</p>
+        </div>
+        <div class="view-tools" id="viewTools">
+          <button class="view-btn" data-view="0"   type="button">正面</button>
+          <button class="view-btn" data-view="90"  type="button">側面</button>
+          <button class="view-btn" data-view="180" type="button">背面</button>
+          <button class="view-btn" id="openBtn" type="button">引き出しを開ける</button>
+          <button class="view-btn is-active" id="rotBtn" type="button">自動回転</button>
+        </div>
+      </figure>
+
+      <figure id="fig2" class="panel">
+        <h2 class="block-title">図面</h2>
+        <div id="sheet" aria-live="polite"></div>
+      </figure>
+    </div>
+
+    <div class="col-side">
+
+      <section class="b-size panel" aria-label="寸法">
+        <h2 class="block-title">寸法</h2>
+        <div class="field">
+          <div class="field-head"><label for="W">幅</label><output class="val" id="vW"></output></div>
+          <input type="range" id="W" min="60" max="120" step="5" value="80">
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="D">奥行き</label><output class="val" id="vD"></output></div>
+          <input type="range" id="D" min="35" max="70" step="1" value="45">
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="N">段数</label><output class="val" id="vN"></output></div>
+          <input type="range" id="N" min="3" max="7" step="1" value="5">
+        </div>
+        <div class="field">
+          <div class="field-head"><span class="lbl">高さ（脚込み）</span><output class="val" id="vH"></output></div>
+          <p class="h-note">※ 段数によって高さが決まっています</p>
+        </div>
+      </section>
+
+      <section class="b-finish" aria-label="仕上げ">
+        <h2 class="block-title">仕上げ</h2>
+        <div class="finish-list" id="grades"></div>
+      </section>
+
+      <section class="b-ship" aria-label="お届け先">
+        <h2 class="block-title"><label for="dest">お届け先</label></h2>
+        <div class="sel"><select id="dest"><option value="">選んでください</option></select></div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<section class="final" id="final" aria-label="最終確認">
+  <div class="final-in">
+    <h2 class="block-title">最終確認</h2>
+    <div class="final-grid">
+      <div class="final-panel">
+        <dl class="spec">
+          <div><dt>寸法</dt><dd id="fSize"></dd></div>
+          <div><dt>引き出し</dt><dd id="fDrawers"></dd></div>
+          <div><dt>仕上げ</dt><dd id="fFinish"></dd></div>
+          <div><dt>お届け先</dt><dd id="fDest"></dd></div>
+        </dl>
+        <p class="f-label">合計（税込）<span class="tag" id="fTag">＋送料別</span></p>
+        <div class="f-price" id="fPrice">—</div>
+        <div class="actions">
+          <a class="btn-primary js-go" href="contact.html">この仕様で進む</a>
+        </div>
+        <p class="status" id="status" role="status"></p>
+        <textarea id="fallbackBox" readonly hidden aria-label="問い合わせ用の内容"></textarea>
+      </div>
+      <div>
+        <table class="calc"><tbody id="finalCalc"></tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="bar" id="bar" role="region" aria-label="合計金額">
+  <div class="bar-detail" id="barDetail" hidden>
+    <div class="bar-in">
+      <div class="bar-detail-title"><span>内訳</span></div>
+      <table class="calc"><tbody id="barCalc"></tbody></table>
+    </div>
+  </div>
+  <div class="bar-in bar-strip"><span class="bar-delta" id="barDelta"></span></div>
+  <div class="bar-in bar-main">
+    <div class="bar-info">
+      <div class="bar-row"><span>合計（税込）</span><span class="bar-tag" id="barTag">＋送料別</span></div>
+      <div class="bar-price" id="barPrice">—</div>
+      <div class="bar-row"><span id="barSize">—</span></div>
+    </div>
+    <div class="bar-actions">
+      <a class="bar-go js-go" href="contact.html">この仕様で進む</a>
+      <button class="bar-toggle" id="barToggle" type="button" aria-expanded="false" aria-controls="barDetail">内訳を見る</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="sf-in">
+    <div class="logo"><img class="lg" src="images/logo-white.png" alt="omonma"></div>
+    <p class="sf-tag">暮らしに、木の温度を。</p>
+    <div class="sf-links">
+      <a href="index.html#items">コレクション</a>
+    <a href="products.html">商品一覧</a>
+      <a href="https://omonma.jp/about.html">ブランドについて</a>
+      <a href="https://omonma.jp/contact.html">お問い合わせ</a>
+    </div>
+    <p class="sf-copy">© 2026 omonma. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* ヘッダー：下へ進むと隠れ、上へ戻ると現れる／スマホ用メニュー（本サイトと同じ動き） */
+(function(){
+  /* どのページも、開いたときは必ず一番上から表示する */
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
+  var goTop=function(){ scrollTo({top:0,left:0,behavior:'instant'}); };
+  goTop(); addEventListener('load',goTop); addEventListener('pageshow',goTop);
+})();
+(function(){
+  var h=document.getElementById('header'), mb=document.getElementById('menuBtn'), last=0;
+  addEventListener('scroll',function(){
+    var y=scrollY;
+    h.classList.toggle('hide', y>last && y>400 && !h.classList.contains('open'));
+    last=y;
+  },{passive:true});
+  function setMenu(o){h.classList.toggle('open',o);document.body.classList.toggle('menu-open',o);mb.setAttribute('aria-expanded',String(o))}
+  mb.addEventListener('click',function(){setMenu(!h.classList.contains('open'))});
+  h.querySelectorAll('nav a').forEach(function(a){a.addEventListener('click',function(){setMenu(false)})});
+  addEventListener('keydown',function(e){if(e.key==='Escape')setMenu(false)});
+})();
+</script>
+
+<script type="module">
+/* ============================================================
+   ★ ここの数字を書き換えるだけで、価格・寸法が変わります ★
+   （すべて仮の数字です）
+   ============================================================ */
+const SETTINGS = {
+  basePrice:     40000,  // 基本料金（円）
+  pricePerLiter: 60,     // 体積1リットルあたりの加算（円） ※幅×奥行×高さ÷1000 が体積
+  drawerPrice:   9000,   // 引き出し1つあたり（円）
+  roundTo:       1000,   // 価格を丸める単位（円）
+  rangePercent:  10,     // 「○○円〜○○円」の幅（±％）
+  grades: [              // 仕上げ名・説明・価格係数・見た目
+    { name:"Daily Standard",  desc:"突板合板 × ウレタン塗装", spec:["突板合板","ウレタン塗装"], rate:1.0, color:"#d7b383", rough:0.45 },
+    { name:"Solid Craft",     desc:"無垢材 × ウレタン塗装",   spec:["無垢材","ウレタン塗装","組み接ぎ"], rate:1.6, color:"#c0864f", rough:0.40 },
+    { name:"Heritage Luxury", desc:"無垢材 × 蜜蝋ワックス",   spec:["無垢材","蜜蝋ワックス","組み接ぎ"], rate:2.2, color:"#a9693a", rough:0.75 }
+  ]
+};
+const LEG_H  = 15;   // 脚の高さ(cm)
+const T      = 2;    // 板の厚み(cm)
+const GAP    = 0.3;  // 引き出しのすき間(cm)
+const TIER_H = 17;   // 1段あたりの高さ(cm)　※高さ＝脚15＋板4＋段数×17
+// 角の丸み(cm)：実物写真のように「少しだけ」。大きくするとやわらかく、0で角張ります
+const R_TOP = 1.0, R_BOARD = 1.0, R_FRONT = 1.0;
+const BIG_CHANGE = 20000;   // この金額以上の増減は、バーの変更理由を濃く表示する（円・仮）
+/* ============================================================ */
+
+/* ---------- 送料（ヤマト「らくらく家財宅急便／家財おまかせ便」運賃表・税込・2023年8月〜版／茨城発） ----------
+   出典：ヤマト運輸 公式運賃表PDF。サイズ＝幅＋奥行き＋高さの合計。重量は考慮していません（100kg超は別料金）。
+   packAdd は「梱包したときに増えるサイズ(cm)」。梱包後サイズが分かったら書き換えてください（いまは0）。 */
+const SHIP = {
+  packAdd: 0,
+  ranks: [ { r:"B", max:200 }, { r:"C", max:250 }, { r:"D", max:300 }, { r:"E", max:350 } ],
+  dests: ["北海道（道東）","北海道（道北）","北海道（札幌）","北海道（函館）","青森県","秋田県","岩手県","宮城県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","山梨県","長野県","新潟県","富山県","石川県","福井県","静岡県","愛知県","岐阜県","三重県","滋賀県","京都府","奈良県","大阪府","和歌山県","兵庫県","岡山県","広島県","鳥取県","島根県","山口県","香川県","徳島県","愛媛県","高知県","福岡県","佐賀県","長崎県","大分県","熊本県","宮崎県","鹿児島県","沖縄県"],
+  fare: {
+    B: [6980,6980,6680,6160,5900,5690,4980,4710,4710,4650,4510,4510,4620,4510,4510,4510,4510,4620,4800,4820,5680,5690,5830,4650,4980,5640,5640,5800,5800,5750,5830,6120,5830,6350,6560,6350,6560,6760,6380,6130,6790,6670,7040,7090,7420,7480,7420,8630,8630,11210],
+    C: [13580,13580,12230,10320,9890,9400,8870,8110,8110,8010,7740,7740,7960,7740,7740,7740,7740,7960,8390,8440,9360,9400,9790,8010,8870,9310,9310,9730,9730,9510,9790,10220,9790,10600,11850,10600,11850,12370,10760,10380,12340,11960,13690,13790,14230,14330,14230,16190,16190,21060],
+    D: [19240,19240,18110,15890,14620,13280,12240,11630,11630,11470,11270,11270,11380,11270,11270,11270,11270,11380,11770,11850,13200,13280,14460,11470,12240,13120,13120,14380,14380,13440,14460,15720,14460,16800,17810,16800,17810,18360,17100,16030,18330,18030,19400,19560,20550,20720,20550,23520,23520,32690],
+    E: [31460,31460,27990,24970,23070,20930,19020,17670,17670,17420,17070,17070,17290,17070,17070,17070,17070,17290,17870,18000,20800,20930,22810,17420,19020,20670,20670,22690,22690,21170,22810,24720,22810,25950,27100,25950,27100,28380,26400,25070,28320,27430,31710,31950,32720,32990,32720,35770,35770,50750]
+  }
+};
+const rankOf = sum => { const x = SHIP.ranks.find(k => sum <= k.max); return x ? x.r : null; };
+
+const $ = id => document.getElementById(id);
+const yen = n => "¥" + n.toLocaleString("ja-JP");
+const setVal = (id, v, unit) => { $(id).innerHTML = `${v}<small>${unit}</small>`; };
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// 商品ページから「?grade=solid-craft」のように来たとき、そのグレードを最初から選んでおく
+const GRADE_KEYS = ["daily-standard", "solid-craft", "heritage-luxury"];
+const fromUrl = GRADE_KEYS.indexOf(new URLSearchParams(location.search).get("grade"));
+let gradeIndex = fromUrl >= 0 ? fromUrl : 1, isOpen = false, toggleTime = 0, currentText = "";
+let prevState = null, session = null;   // 直前の状態／同じ操作のまとまり（金額の増減表示用）
+
+/* ---------- 計算（画面の全部分がここを使う） ---------- */
+function estimate(W, D, N, gi){
+  const H = LEG_H + 2 * T + N * TIER_H;
+  const liters = W * D * H / 1000;
+  const sizePart = Math.round(liters * SETTINGS.pricePerLiter);
+  const drawerCount = N + 1;                       // 最上段が2つに分かれるので +1
+  const drawerPart = drawerCount * SETTINGS.drawerPrice;
+  const sub = SETTINGS.basePrice + sizePart + drawerPart;
+  const rate = SETTINGS.grades[gi].rate;
+  const total = Math.round(sub * rate / SETTINGS.roundTo) * SETTINGS.roundTo;
+  return { H, liters, sizePart, drawerCount, drawerPart, sub, rate, total };
+}
+
+/* ---------- 3D（読み込めない・WebGLが使えない場合は、表示を切って他は動かす） ---------- */
+let THREE = null, OrbitControls = null, RoundedBoxGeometry = null, has3d = false;
+let renderer, scene, camera, controls, group, drawers = [], prevH = 0;
+try {
+  THREE = await import("three");
+  ({ OrbitControls } = await import("three/addons/controls/OrbitControls.js"));
+} catch (e) { THREE = null; }
+try { ({ RoundedBoxGeometry } = await import("three/addons/geometries/RoundedBoxGeometry.js")); } catch (e) { RoundedBoxGeometry = null; }   // 読めなければ角のある箱で表示
+
+const stage = $("stage");
+const matCache = {};
+let grooveMat = null;
+
+function init3d(){
+  renderer = new THREE.WebGLRenderer({ canvas: $("view"), antialias: true });  // WebGLが使えないとここで例外
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const BG = 0xe6e1d8;
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(BG);
+
+  camera = new THREE.PerspectiveCamera(35, 4/3, 1, 2000);
+  camera.position.set(150, 110, 230);
+
+  controls = new OrbitControls(camera, $("view"));
+  controls.enableDamping = true;
+  controls.enablePan = false;
+  controls.minDistance = 100;
+  controls.maxDistance = 520;
+  controls.maxPolarAngle = Math.PI / 2 - 0.03;
+  controls.autoRotate = !reduceMotion;
+  controls.autoRotateSpeed = 2.0;
+  controls.addEventListener("start", () => setRotate(false));   // 触ったら自動回転を止める
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xb9b3aa, 0.95));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+  sun.position.set(120, 230, 170);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left:-160, right:160, top:160, bottom:-160, near:10, far:700 });
+  sun.shadow.bias = -0.0005;
+  scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.5);
+  fill.position.set(-150, 100, -120);
+  scene.add(fill);
+
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), new THREE.ShadowMaterial({ opacity: 0.22 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  group = new THREE.Group();
+  scene.add(group);
+  grooveMat = new THREE.MeshStandardMaterial({ color: 0x4a2f1a, roughness: 0.9 });
+  new ResizeObserver(resize).observe(stage);
+  resize();
+}
+function resize(){
+  if (!has3d) return;
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+
+function woodTexture(base, vertical){
+  const c = document.createElement("canvas");
+  c.width = c.height = 512;
+  const g = c.getContext("2d");
+  g.fillStyle = base;
+  g.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 260; i++){
+    const pos = Math.random() * 512, amp = 3 + Math.random() * 8, ph = Math.random() * 6.28;
+    const fr = 0.004 + Math.random() * 0.01, dark = Math.random() < 0.5;
+    g.strokeStyle = (dark ? "rgba(60,35,15," : "rgba(255,230,190,") + (0.04 + Math.random() * 0.10) + ")";
+    g.lineWidth = 0.5 + Math.random() * 2.2;
+    g.beginPath();
+    for (let s = 0; s <= 512; s += 16){
+      const off = Math.sin(s * fr * 6.28 + ph) * amp;
+      const x = vertical ? pos + off : s, y = vertical ? s : pos + off;
+      s === 0 ? g.moveTo(x, y) : g.lineTo(x, y);
+    }
+    g.stroke();
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
+  return tex;
+}
+function getMats(i){
+  if (!matCache[i]){
+    const gr = SETTINGS.grades[i];
+    const mk = v => new THREE.MeshStandardMaterial({ map: woodTexture(gr.color, v), roughness: gr.rough, metalness: 0 });
+    matCache[i] = { H: mk(false), V: mk(true) };   // H=横木目 / V=縦木目
+  }
+  return matCache[i];
+}
+// r＝角の丸み(cm)。薄い板でも崩れないよう、いちばん薄い辺の48%までに抑える。0なら角のある箱
+function box(parent, w, h, d, x, y, z, mat, r = 0){
+  const rr = Math.min(r, Math.min(w, h, d) * 0.48);
+  const geo = (RoundedBoxGeometry && rr > 0.05) ? new RoundedBoxGeometry(w, h, d, 4, rr) : new THREE.BoxGeometry(w, h, d);
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(x, y, z);
+  m.castShadow = true; m.receiveShadow = true;
+  parent.add(m);
+  return m;
+}
+function build3d(W, D, H, N, gi){
+  while (group.children.length){
+    const o = group.children.pop();
+    o.traverse(m => { if (m.geometry) m.geometry.dispose(); });
+  }
+  drawers = [];
+  const { H: mH, V: mV } = getMats(gi);
+  const caseH = H - LEG_H, yc = LEG_H + caseH / 2;
+
+  box(group, W + 1, T, D + 1, 0, H - T / 2, 0, mH, R_TOP);                                   // 天板
+  box(group, W, T, D, 0, LEG_H + T / 2, 0, mH, R_BOARD);                                       // 底板
+  for (const s of [-1, 1]) box(group, T, caseH - 2 * T, D, s * (W / 2 - T / 2), yc, 0, mV, R_BOARD);  // 側板
+  box(group, W - 2 * T, caseH - 2 * T, 0.8, 0, yc, -D / 2 + 0.4, mV);                 // 背板
+
+  const lx = W / 2 - 6, lz = D / 2 - 6;
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]){
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 1.4, LEG_H, 24), mV);
+    leg.position.set(sx * lx, LEG_H / 2, sz * lz);
+    leg.castShadow = true; leg.receiveShadow = true;
+    group.add(leg);
+  }
+  for (const sz of [-1, 1]) box(group, 2 * lx, 4, 1.5, 0, LEG_H - 2.5, sz * lz, mH, 0.3);
+  for (const sx of [-1, 1]) box(group, 1.5, 4, 2 * lz, sx * lx, LEG_H - 2.5, 0, mH);
+
+  const OW = W - 2 * T, AH = caseH - 2 * T, th = AH / N, yTop = H - T;
+  const dd = D - 2.5, bd = dd - 2;
+  for (let i = 0; i < N; i++){
+    const fh = th - GAP, y = yTop - i * th - th / 2;
+    const cols = (i === 0) ? [-1, 1] : [0];                          // 最上段は2分割
+    const fw = (i === 0) ? (OW - 3 * GAP) / 2 : OW - 2 * GAP;
+    cols.forEach(c => {
+      const dg = new THREE.Group();
+      dg.position.set((i === 0) ? c * (fw / 2 + GAP / 2) : 0, y, 0);
+      box(dg, fw, fh, 2, 0, 0, D / 2 - 1, mH, R_FRONT);                                    // 前板
+      box(dg, fw * 0.62, 0.7, 0.3, 0, -fh / 2 + 1.5, D / 2 - 0.1, grooveMat);     // 引き手のくぼみ
+      const bw = fw - 2, bh = fh - 2, bz = D / 2 - 2 - bd / 2;
+      box(dg, 1, bh, bd, -bw / 2, 0, bz, mH);
+      box(dg, 1, bh, bd,  bw / 2, 0, bz, mH);
+      box(dg, bw, bh, 1, 0, 0, bz - bd / 2, mH);
+      box(dg, bw, 1, bd, 0, -bh / 2 + 0.5, bz, mH);
+      group.add(dg);
+      drawers.push({ g: dg, tier: i, cur: isOpen ? bd * 0.5 : 0, max: bd * 0.5 });
+    });
+  }
+  // カメラ：最初は家具が画面いっぱいに入る距離に。段数が変わっても見た目の大きさを保つ
+  const tgt = new THREE.Vector3(0, H / 2, 0);
+  if (!prevH){
+    const dist = Math.max(H, W * 0.9) * 2.1;
+    camera.position.set(tgt.x + dist * 0.5, tgt.y + dist * 0.18, tgt.z + dist * 0.85);
+  } else {
+    camera.position.sub(controls.target).multiplyScalar(H / prevH).add(tgt);
+  }
+  controls.target.copy(tgt);
+  prevH = H;
+}
+
+if (THREE){
+  try { has3d = true; init3d(); } catch (e) { has3d = false; }
+}
+if (!has3d){
+  $("stageFallback").hidden = false;
+  $("viewTools").hidden = true;
+  $("view").hidden = true;
+  stage.classList.add("no3d");
+}
+
+/* ---------- 図面（正面図・側面図）：実寸から描く ---------- */
+function drawSheet(W, D, N){
+  const s = 2.2, H = LEG_H + 2 * T + N * TIER_H, caseH = H - LEG_H;
+  const x0 = 56, y0 = 8, gap = 48, legW = 9, g = 3;          // g＝引き出しどうしのすき間（本体の色が見える）
+  const fw = W * s, sw = D * s, bodyH = caseH * s, fullH = H * s;
+  const xs = x0 + fw + gap;
+  const vbW = xs + sw + 8, vbH = y0 + fullH + 52;
+  let p = `<rect class="dr-body" x="${x0}" y="${y0}" width="${fw}" height="${bodyH}"/>`;      // 正面図：本体
+  const ix0 = x0 + T * s + g, ix1 = x0 + fw - T * s - g, th = TIER_H * s;
+  for (let i = 0; i < N; i++){
+    const y = y0 + T * s + i * th + g / 2, h = th - g;
+    if (i === 0){
+      const w = (ix1 - ix0 - g) / 2;
+      p += `<rect class="dr-front" x="${ix0}" y="${y}" width="${w}" height="${h}"/><rect class="dr-front" x="${ix0 + w + g}" y="${y}" width="${w}" height="${h}"/>`;
+    } else p += `<rect class="dr-front" x="${ix0}" y="${y}" width="${ix1 - ix0}" height="${h}"/>`;
+  }
+  for (const cx of [x0 + 6 * s, x0 + fw - 6 * s])
+    p += `<rect class="dr-leg" x="${cx - legW / 2}" y="${y0 + bodyH}" width="${legW}" height="${LEG_H * s}"/>`;
+  p += `<rect class="dr-body" x="${xs}" y="${y0}" width="${sw}" height="${bodyH}"/>`;          // 側面図
+  for (const cx of [xs + 6 * s, xs + sw - 6 * s])
+    p += `<rect class="dr-leg" x="${cx - legW / 2}" y="${y0 + bodyH}" width="${legW}" height="${LEG_H * s}"/>`;
+  // 寸法は数字だけ（線は引かない）
+  const by = y0 + fullH + 36;
+  p += `<text class="dr-tx" transform="translate(${x0 - 20} ${y0 + fullH / 2}) rotate(-90)" text-anchor="middle">H ${H}</text>`;
+  p += `<text x="${x0 + fw / 2}" y="${by}" text-anchor="middle"><tspan class="dr-tx">W ${W}</tspan></text>`;
+  p += `<text x="${xs + sw / 2}" y="${by}" text-anchor="middle"><tspan class="dr-tx">D ${D}</tspan></text>`;
+  $("sheet").innerHTML =
+    `<svg viewBox="0 0 ${vbW} ${vbH}" style="width:100%;max-width:${Math.round(vbW * 1.5)}px;height:auto" role="img" ` +
+    `aria-label="正面図・側面図。幅${W}、奥行き${D}、高さ${H}（単位cm）">${p}</svg>`;
+}
+
+/* ---------- 画面の更新 ---------- */
+// スライダーの「ここまで」を塗る（現在位置の割合）
+function paintSliders(){
+  document.querySelectorAll("input[type=range]").forEach(inp => {
+    inp.style.setProperty("--p", ((inp.value - inp.min) / (inp.max - inp.min) * 100) + "%");
+  });
+}
+
+// 仕上げの表
+const gradesEl = $("grades");
+SETTINGS.grades.forEach((g, i) => {
+  const el = document.createElement("label");
+  el.className = "grade";
+  el.innerHTML = `<input type="radio" name="g" value="${i}"><span class="g-name">${g.name}</span><span class="g-spec">${g.spec.map(t => `<i>${t}</i>`).join("")}</span>`;
+  el.querySelector("input").addEventListener("change", () => { gradeIndex = i; update("G"); });
+  gradesEl.appendChild(el);
+});
+
+// お届け先の選択肢
+SHIP.dests.forEach((name, i) => $("dest").add(new Option(name, i)));
+
+// 内訳の行（固定バーと最終確認で同じものを使う）。送料・設置費は金額データがないので「含まれない」と明記する
+function calcRows(e, g, sh){
+  const shipTxt = sh.fee !== null ? yen(sh.fee) : (sh.dest === null ? "未選択" : "要確認");
+  return `<tr><th>基本料金</th><td>${yen(SETTINGS.basePrice)}</td></tr>` +
+    `<tr><th>サイズ分</th><td>${yen(e.sizePart)}</td></tr>` +
+    `<tr><th>引き出し分</th><td>${yen(e.drawerPart)}</td></tr>` +
+    `<tr><th>小計</th><td>${yen(e.sub)}</td></tr>` +
+    `<tr><th>仕上げ（${g.name}）</th><td>× ${e.rate}</td></tr>` +
+    `<tr class="sum"><th>本体価格</th><td>${yen(e.total)}</td></tr>` +
+    `<tr><th>送料${sh.rank ? "（" + sh.rank + "ランク）" : ""}</th><td>${shipTxt}</td></tr>` +
+    `<tr><th>設置費</th><td>別途</td></tr>` +
+    `<tr class="total"><th>合計（税込）</th><td>${yen(e.total + (sh.fee || 0))}</td></tr>`;
+}
+// 金額が変わった理由：操作した項目の「前→後」。送料のサイズ区分が変わったときは、それも書く
+function changeReason(key, from, cur){
+  let t = "";
+  if (key === "W") t = `幅 ${from.W}→${cur.W}`;
+  if (key === "D") t = `奥行き ${from.D}→${cur.D}`;
+  if (key === "N") t = `段数 ${from.N}→${cur.N}`;
+  if (key === "G") t = `仕上げ ×${SETTINGS.grades[from.gi].rate}→×${SETTINGS.grades[cur.gi].rate}`;
+  if (key === "S") return cur.dest === null ? "お届け先 未選択" : `お届け先 ${SHIP.dests[cur.dest]}`;
+  if (cur.dest !== null && from.rank !== cur.rank && cur.rank) t += `、送料${from.rank || "-"}→${cur.rank}ランク`;
+  return t;
+}
+
+function update(key){
+  const W = +$("W").value, D = +$("D").value, N = +$("N").value;
+  const e = estimate(W, D, N, gradeIndex), H = e.H;
+  const g = SETTINGS.grades[gradeIndex];
+  const dest = $("dest").value === "" ? null : +$("dest").value;
+  const rank = rankOf(W + D + H + SHIP.packAdd);
+  const sh = { dest, rank, fee: (dest !== null && rank) ? SHIP.fare[rank][dest] : null };
+  const grand = e.total + (sh.fee || 0);
+
+  setVal("vW", W, "cm"); setVal("vD", D, "cm"); setVal("vN", N, "段"); setVal("vH", H, "cm");
+  paintSliders();
+
+  document.querySelectorAll(".grade").forEach((tr, i) => {
+    tr.classList.toggle("is-active", i === gradeIndex);
+    tr.querySelector("input").checked = (i === gradeIndex);
+  });
+
+  // ---- 金額の表示：固定バー・最終確認・内訳（すべて同じ計算結果から、その場で更新） ----
+  const priceHTML = `<span class="about">約</span>${yen(grand)}`;
+  const rows = calcRows(e, g, sh);
+  const tag = dest !== null ? "送料込み" : "＋送料別";
+  $("barTag").textContent = tag; $("fTag").textContent = tag;
+  $("barPrice").innerHTML = priceHTML;
+  $("barSize").textContent = `W${W} × D${D} × H${H} cm`;
+  $("barCalc").innerHTML = rows;
+  $("finalCalc").innerHTML = rows;
+  $("fPrice").innerHTML = priceHTML;
+  $("fSize").textContent = `W${W} × D${D} × H${H} cm`;
+  $("fDrawers").textContent = `${N}段・${e.drawerCount}個`;
+  $("fFinish").textContent = g.name;
+  $("fDest").textContent = dest !== null ? SHIP.dests[dest] : "未選択";
+
+  // ---- 増減額と理由（同じ項目を続けて動かしている間は、動かし始めからの合計を出す） ----
+  const cur = { W, D, N, gi: gradeIndex, dest, rank, total: grand };
+  if (key && prevState){
+    const now = performance.now();
+    if (!session || session.key !== key || now - session.t > 1500) session = { key, from: prevState };
+    session.t = now;
+    const diff = cur.total - session.from.total;
+    const el = $("barDelta");
+    el.textContent = `${diff > 0 ? "＋" : diff < 0 ? "−" : "±"}${yen(Math.abs(diff))}（${changeReason(key, session.from, cur)}）`;
+    el.classList.add("on");
+    el.classList.toggle("big", Math.abs(diff) >= BIG_CHANGE);
+  }
+  prevState = cur;
+
+  drawSheet(W, D, N);
+  if (has3d) build3d(W, D, H, N, gradeIndex);
+
+  currentText =
+`【サイズシミュレーターの結果】
+幅 ${W}cm × 奥行き ${D}cm × 高さ ${H}cm（脚を含む）
+${N}段チェスト（引き出し${e.drawerCount}個）
+仕上げ：${g.name}（${g.desc}）
+本体価格：約 ${yen(e.total)}
+送料：${sh.fee !== null ? SHIP.dests[dest] + "お届け（" + rank + "ランク）" + yen(sh.fee) : "お届け先 未選択"}
+合計：約 ${yen(grand)}（税込・目安・設置費別）`;
+  const href = "contact.html?message=" + encodeURIComponent(currentText);
+  document.querySelectorAll(".js-go").forEach(a => { a.href = href; });
+}
+["W", "D", "N"].forEach(id => $(id).addEventListener("input", () => update(id)));
+$("dest").addEventListener("change", () => update("S"));
+
+/* ---------- ボタン ---------- */
+function setRotate(on){
+  if (!has3d) return;
+  controls.autoRotate = on;
+  $("rotBtn").classList.toggle("is-active", on);
+}
+if (has3d) $("rotBtn").classList.toggle("is-active", controls.autoRotate);
+$("rotBtn").addEventListener("click", () => setRotate(!controls.autoRotate));
+
+$("openBtn").addEventListener("click", () => {
+  isOpen = !isOpen;
+  toggleTime = performance.now();
+  $("openBtn").classList.toggle("is-active", isOpen);
+  $("openBtn").textContent = isOpen ? "引き出しを閉める" : "引き出しを開ける";
+});
+
+document.querySelectorAll("[data-view]").forEach(b => {
+  b.addEventListener("click", () => {
+    if (!has3d) return;
+    setRotate(false);
+    const az = (+b.dataset.view) * Math.PI / 180;
+    const t = controls.target, dist = camera.position.distanceTo(t);
+    camera.position.set(t.x + Math.sin(az) * dist, t.y + dist * 0.15, t.z + Math.cos(az) * dist);
+  });
+});
+
+/* ---------- コピーと問い合わせ（失敗したときも手動で渡せるようにする） ---------- */
+const setStatus = msg => { $("status").textContent = msg; };
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); return true; } catch (e) { return false; }
+}
+function showFallback(t){
+  const ta = $("fallbackBox");
+  ta.hidden = false; ta.value = t; ta.focus({ preventScroll: true }); ta.select();
+}
+// 「この仕様で進む」（固定バー・最終確認の両方）：内容をコピーしてフォームへ。失敗したら最終確認の手動コピー枠へ案内
+let goNext = false;
+document.querySelectorAll(".js-go").forEach(a => a.addEventListener("click", async ev => {
+  if (goNext) return;                       // 手動コピーの案内後は、そのままフォームへ移動
+  ev.preventDefault();
+  const btn = ev.currentTarget;
+  if (await copyText(currentText)) {
+    setStatus("コピーしました。フォームのメッセージ欄に貼り付けてください。");
+    btn.textContent = "コピーしました";
+    setTimeout(() => { location.href = btn.href; }, 900);
+  } else {
+    showFallback(currentText);
+    $("final").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    setStatus("コピーできませんでした。下の枠の内容をコピーして、もう一度「この仕様で進む」を押してください。");
+    goNext = true;
+  }
+}));
+addEventListener("pageshow", () => document.querySelectorAll(".js-go").forEach(b => { b.textContent = "この仕様で進む"; }));
+
+/* ---------- 固定バー：内訳の開閉と、ページ下の余白（バーの高さぶん） ---------- */
+function toggleDetail(open){
+  $("barDetail").hidden = !open;
+  $("barToggle").setAttribute("aria-expanded", String(open));
+  $("barToggle").textContent = open ? "内訳を閉じる" : "内訳を見る";
+}
+$("barToggle").addEventListener("click", () => toggleDetail($("barDetail").hidden));
+addEventListener("keydown", ev => { if (ev.key === "Escape" && !$("barDetail").hidden) toggleDetail(false); });
+new ResizeObserver(() => {
+  if ($("barDetail").hidden) document.documentElement.style.setProperty("--bar-h", $("bar").offsetHeight + "px");
+}).observe($("bar"));
+
+/* ---------- 毎フレームの描画 ---------- */
+function loop(){
+  requestAnimationFrame(loop);
+  const now = performance.now();
+  drawers.forEach(d => {
+    const target = isOpen ? d.max : 0;
+    if (reduceMotion) d.cur = target;
+    else if (now - toggleTime > d.tier * 90) d.cur += (target - d.cur) * 0.12;   // 段ごとに少しずらして動く
+    d.g.position.z = d.cur;
+  });
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+update();
+if (has3d) loop();
+</script>
+</body>
+</html>
