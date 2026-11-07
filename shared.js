@@ -18,7 +18,7 @@
   const footerHTML = `
 <footer class="site-footer-inner">
   <div class="footer-brand"><img src="images/logo.png" alt="omonma"></div>
-  <p class="footer-tagline">暮らしに、木の温度を。</p>
+  <p class="footer-tagline">子供と育つ、一生モノ家具を。</p>
   <nav class="footer-nav" aria-label="フッターナビ">
     <a href="${isHome ? '#collections' : 'index.html#collections'}">コレクション</a>
     <a href="about.html">ブランドについて</a>
