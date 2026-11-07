@@ -294,3 +294,41 @@ header.open .lg-dark{display:block}
 .foot-logo img.lg{height:34px;margin:0 auto}
 @media(max-width:700px){.logo img.lg{height:19px}.foot-logo img.lg{height:28px}}
 .logo img.lg{background:none;object-fit:contain;width:auto}
+
+/* ===== PC：ギャラリーの左端を見出しの左端にそろえる／タグはグレード名の直下 ===== */
+.gallery{padding-left:max(clamp(20px,5vw,60px),calc((100vw - 1200px)/2 + clamp(20px,5vw,60px)));scroll-padding-left:max(clamp(20px,5vw,60px),calc((100vw - 1200px)/2 + clamp(20px,5vw,60px)))}
+.gallery figure{scroll-snap-align:start}
+.gal-ctrl{max-width:1200px}
+.card h3{margin:6px 0 12px}
+.card .tag{margin:0 0 16px}
+
+/* ===== ブランドについて ===== */
+.ab-quote{font-size:clamp(1.15rem,2.2vw,1.6rem);line-height:2;font-weight:500;border-left:2px solid var(--wood);padding-left:22px;margin:clamp(36px,6vw,60px) 0 36px;max-width:760px}
+.ab-text{max-width:720px}
+.ab-text p{margin-bottom:22px;line-height:2.05}
+.members{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:28px}
+.member{background:var(--bg-alt,#f3ece1);border-radius:6px;padding:30px 28px 34px}
+.m-en{font-family:var(--en);font-style:italic;color:var(--wood);letter-spacing:.12em;font-size:.95rem}
+.member h3{font-size:1.25rem;font-weight:700;margin:8px 0 12px;letter-spacing:.04em}
+.member p{font-size:.9rem;line-height:1.95}
+@media(max-width:900px){.members{grid-template-columns:1fr}}
+/* トップのストーリーの引用も中くらいの大きさに */
+.quote{font-size:clamp(1.1rem,1.9vw,1.4rem);line-height:2;font-weight:500}
+.story-grid p.quote{font-size:clamp(1.15rem,2vw,1.45rem);line-height:2;font-weight:500}
+
+/* ===== PC：ストーリーの左右の文章・写真の上下をそろえる ===== */
+@media(min-width:801px){
+  .story-grid{align-items:stretch}
+  .story-grid>div{display:flex;flex-direction:column}
+  .story-col2{padding-top:0}
+  .story-grid>div .story-photo{margin-top:auto!important}
+  .story-grid>div>p:last-of-type{margin-bottom:40px}
+}
+
+/* ===== ストーリー：文章は1カラム、写真は2カラム ===== */
+.story-text{max-width:760px;margin-top:70px}
+.story-text p{font-size:.98rem;line-height:2.05;margin-bottom:22px}
+.story-text p.quote{font-size:clamp(1.15rem,2vw,1.45rem);line-height:2;font-weight:500;margin-bottom:32px}
+.story-photos{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,60px);margin-top:50px}
+.story-photos .story-photo{margin:0!important}
+@media(max-width:800px){.story-photos{grid-template-columns:1fr}}
