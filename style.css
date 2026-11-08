@@ -332,3 +332,49 @@ header.open .lg-dark{display:block}
 .story-photos{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,60px);margin-top:50px}
 .story-photos .story-photo{margin:0!important}
 @media(max-width:800px){.story-photos{grid-template-columns:1fr}}
+
+/* ===== 指示書対応：見積もりボタン・【要確認】・比較表・FAQなど ===== */
+nav a.nav-cta{padding:9px 22px;border-radius:100px;background:var(--wood);color:#fff;letter-spacing:.1em}
+nav a.nav-cta::after{display:none}
+nav a.nav-cta:hover{background:var(--wood-dark)}
+.tbd{display:inline;background:#fff1b8;color:#7a2a00;padding:1px 7px;border-radius:3px;font-style:normal;font-weight:500;font-size:.88em;letter-spacing:.02em;line-height:1.9}
+.more-link{color:var(--wood-dark);font-weight:500;border-bottom:1px solid currentColor;padding-bottom:2px;letter-spacing:.06em}
+.pick{display:inline-block;margin-left:8px;padding:2px 10px;border-radius:100px;background:var(--wood);color:#fff;font-size:.72rem;letter-spacing:.08em;font-style:normal;vertical-align:middle;line-height:1.7}
+.gt-wrap{margin-top:clamp(40px,6vw,70px);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.grade-table{width:100%;min-width:760px;border-collapse:collapse;font-size:.9rem;line-height:1.8}
+.grade-table th,.grade-table td{padding:16px 18px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-weight:400}
+.grade-table thead th{font-weight:700;font-size:.95rem;border-bottom:2px solid var(--ink);white-space:nowrap}
+.grade-table tbody th{color:var(--wood);font-size:.82rem;letter-spacing:.08em;white-space:nowrap;width:11em}
+.grade-table .pick-col{background:rgba(139,94,60,.09)}
+.craft-extra{display:flex;gap:clamp(24px,5vw,60px);justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,70px);text-align:left;flex-wrap:wrap}
+.boat-fig{width:min(480px,100%)}
+.boat-fig img{aspect-ratio:8/5;object-fit:cover;border-radius:4px}
+.boat-fig figcaption{margin-top:12px;font-size:.8rem;line-height:1.8}
+.maker-box{width:200px;text-align:center}
+.maker-ph{width:140px;height:140px;border-radius:50%;background:#3a2f27;color:#a99a86;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:.85rem}
+.maker-box p{font-size:.8rem;line-height:1.9}
+.faq-list{margin-top:36px;border-top:1px solid var(--line);max-width:860px}
+.faq-list details{border-bottom:1px solid var(--line);padding:22px 8px}
+.faq-list summary{cursor:pointer;font-weight:500;font-size:1.02rem;line-height:1.8;list-style:none;position:relative;padding-right:30px}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary::after{content:"+";position:absolute;right:4px;top:0;color:var(--wood);font-size:1.3rem}
+.faq-list details[open] summary::after{content:"−"}
+.faq-list details p{margin-top:12px;font-size:.92rem}
+.cta-band .btn{margin-top:30px}
+.cta-sub{margin-top:22px;font-size:.9rem}
+.cta-sub a{border-bottom:1px solid currentColor;padding-bottom:2px;letter-spacing:.08em}
+.tbd-box{margin-top:30px;padding:22px 24px;border:1px dashed #b5472f;border-radius:6px;background:#fffaf0}
+.safety-box{margin-top:clamp(40px,6vw,70px);max-width:760px}
+.safety-box h3{font-size:1.15rem;font-weight:700;letter-spacing:.04em}
+.safety-box ul{margin-top:14px;list-style:none;border-top:1px solid var(--line)}
+.safety-box li{padding:14px 4px;border-bottom:1px solid var(--line);font-size:.92rem}
+.legal{max-width:860px}
+.legal .note-top{margin:20px 0 30px;padding:14px 18px;background:#fff1b8;color:#7a2a00;border-radius:4px;font-size:.88rem;line-height:1.9}
+.legal dl div{display:grid;grid-template-columns:13em 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);font-size:.92rem;line-height:1.9}
+.legal dt{color:var(--wood);font-weight:500}
+.legal h2{font-size:1.15rem;margin:38px 0 8px}
+@media(max-width:700px){.legal dl div{grid-template-columns:1fr;gap:4px}}
+
+.prod-line{margin-top:8px;font-size:.88rem;line-height:1.8}
+.prod-price{margin-top:6px;font-size:.9rem}
+.m-tbd{margin-top:12px;font-size:.82rem}
