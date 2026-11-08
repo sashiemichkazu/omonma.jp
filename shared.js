@@ -9,20 +9,23 @@
     <span></span><span></span><span></span>
   </button>
   <ul class="nav-links" id="nav-links">
-    <li><a href="${isHome ? '#collections' : 'index.html#collections'}">コレクション</a></li>
+    <li><a href="products.html">商品一覧</a></li>
     <li><a href="about.html">ブランドについて</a></li>
     <li><a href="contact.html">お問い合わせ</a></li>
+    <li><a class="nav-cta" href="contact.html">見積もり</a></li>
   </ul>
 </nav>`;
 
   const footerHTML = `
 <footer class="site-footer-inner">
   <div class="footer-brand"><img src="images/logo.png" alt="omonma"></div>
-  <p class="footer-tagline">子供と育つ、一生モノ家具を。</p>
+  <p class="footer-tagline">子どもと育つ、一生モノの家具。</p>
   <nav class="footer-nav" aria-label="フッターナビ">
-    <a href="${isHome ? '#collections' : 'index.html#collections'}">コレクション</a>
+    <a href="products.html">商品一覧</a>
     <a href="about.html">ブランドについて</a>
     <a href="contact.html">お問い合わせ</a>
+    <a href="tokushoho.html">特定商取引法に基づく表記</a>
+    <a href="privacy.html">プライバシーポリシー</a>
   </nav>
   <p class="footer-copy">© 2026 omonma. All rights reserved.</p>
 </footer>`;
