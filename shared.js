@@ -4,7 +4,7 @@
 
   const navHTML = `
 <nav class="site-nav" id="site-nav">
-  <a class="nav-brand" href="${isHome ? '#hero-section' : 'index.html'}"><img src="images/logo.png" alt="omonma"></a>
+  <a class="nav-brand" href="${isHome ? '#hero-section' : 'index.html'}"><img src="images/logo.png" alt="omomma"></a>
   <button class="nav-toggle" id="nav-toggle" aria-label="メニュー" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
@@ -18,7 +18,7 @@
 
   const footerHTML = `
 <footer class="site-footer-inner">
-  <div class="footer-brand"><img src="images/logo.png" alt="omonma"></div>
+  <div class="footer-brand"><img src="images/logo.png" alt="omomma"></div>
   <p class="footer-tagline">子どもと育つ、一生モノの家具。</p>
   <nav class="footer-nav" aria-label="フッターナビ">
     <a href="products.html">商品一覧</a>
@@ -27,7 +27,7 @@
     <a href="tokushoho.html">特定商取引法に基づく表記</a>
     <a href="privacy.html">プライバシーポリシー</a>
   </nav>
-  <p class="footer-copy">© 2026 omonma. All rights reserved.</p>
+  <p class="footer-copy">© 2026 omomma. All rights reserved.</p>
 </footer>`;
 
   // Inject nav
