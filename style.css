@@ -378,3 +378,20 @@ nav a.nav-cta:hover{background:var(--wood-dark)}
 .prod-line{margin-top:8px;font-size:.88rem;line-height:1.8}
 .prod-price{margin-top:6px;font-size:.9rem}
 .m-tbd{margin-top:12px;font-size:.82rem}
+
+/* ===== 比較表：スマホは項目ごとのブロック ===== */
+.grade-table td[data-g="Daily Standard"]{--gc:#6f8494}
+.grade-table td[data-g="Solid Craft"]{--gc:var(--wood)}
+.grade-table td[data-g="Heritage Luxury"]{--gc:#3a2f27}
+@media (max-width:768px){
+  .gt-wrap{overflow-x:visible}
+  .grade-table,.grade-table thead,.grade-table tbody,.grade-table tr,.grade-table th,.grade-table td{display:block;min-width:0;width:100%}
+  .grade-table thead th{display:none}
+  .grade-table thead th.pick-col{display:block;background:none;font-size:0;border:0;padding:0;margin-bottom:14px}
+  .grade-table thead .pick{margin:0;font-size:.78rem}
+  .grade-table thead .pick::after{content:" ＝ Solid Craft"}
+  .grade-table tbody tr{margin-bottom:24px;border-top:2px solid var(--ink)}
+  .grade-table tbody th{width:auto;padding:12px 4px 6px;border:0;font-weight:700;font-size:.95rem;color:var(--ink);white-space:normal}
+  .grade-table td{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:10px 4px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+  .grade-table td::before{content:attr(data-g);flex:0 0 9.5em;box-sizing:border-box;padding-left:16px;font-weight:700;font-size:.82rem;white-space:nowrap;color:var(--gc);background:radial-gradient(circle at 5px 55%,var(--gc) 5px,transparent 5.5px) no-repeat}
+}
