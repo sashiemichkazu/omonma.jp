@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>omonma — 生まれた日から、ともに育つ家具。</title>
+<title>omonma｜子どもと育つ、一生モノの家具。</title>
 <meta name="description" content="子どもと育つ、安心の一生モノ家具。木工作家・造船作家が手がける国産家具ブランド omonma。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,12 +18,12 @@
 <div class="cursor" id="cursor"></div>
 
 <header class="top" id="header">
-  <a href="#" class="logo"><img class="lg lg-dark" src="images/logo-brown.png" alt="omonma"><img class="lg lg-light" src="images/logo-white.png" alt="" aria-hidden="true"></a>
+  <a href="index.html" class="logo"><img class="lg lg-dark" src="images/logo-brown.png" alt="omonma"><img class="lg lg-light" src="images/logo-white.png" alt="" aria-hidden="true"></a>
   <nav>
-    <a href="index.html">omonmaトップ</a>
     <a href="products.html">商品一覧</a>
     <a href="about.html">ブランドについて</a>
     <a href="https://omonma.jp/contact.html">お問い合わせ</a>
+    <a href="https://omonma.jp/contact.html" class="nav-cta">見積もり</a>
   </nav>
   <button class="menu-btn" id="menuBtn" type="button" aria-label="メニュー" aria-expanded="false"><i></i><i></i></button>
 </header>
@@ -32,13 +32,14 @@
 <section class="hero" id="hero">
   <div class="hero-img" data-speed="0.25"><img src="images/p05.jpg" fetchpriority="high" decoding="async" alt="ケーン張りのベンチと椅子が並ぶ、コンクリートと木のリビング"></div>
   <div class="hero-text" id="heroText">
-    <p class="eyebrow fade">きっと世界で1番小さい家具工房でつくられる</p>
+    <p class="eyebrow fade">茨城・小文間（おもんま）の小さな工房で、一台ずつ。</p>
     <h1>
-      <span class="line"><span>子供と育つ、</span></span>
-      <span class="line"><span>安心の一生モノ家具。</span></span>
+      <span class="line"><span>子どもと育つ、</span></span>
+      <span class="line"><span>一生モノの家具。</span></span>
     </h1>
-    <p class="fade" style="transition-delay:.7s">子どもの成長を刻む、一生モノの家具を。<br>傷も汚れも、すべて家族の記憶になります。</p>
-    <a href="#items" class="btn fade magnetic" style="transition-delay:.9s">コレクションを見る <span class="arr">→</span></a>
+    <!-- 【要確認】角の丸み・ソフトクローズ（引き出しがゆっくり閉まる）は、実際の仕様を確認してから文言を確定すること -->
+    <p class="fade" style="transition-delay:.7s">角は丸く、引き出しはゆっくり閉まる。<br>ミッドセンチュリーの国産家具です。</p>
+    <a href="#items" class="btn fade magnetic" style="transition-delay:.9s">家具を見る <span class="arr">→</span></a>
   </div>
   <div class="scroll-hint">SCROLL<i></i></div>
 </section>
@@ -47,14 +48,11 @@
 <section class="pad" id="story">
   <div class="wrap">
     <div class="rv"><div class="label">Story</div></div>
-    <h2 class="rv">
-      おしゃれな家具は、<br>子育て家庭では難しい——<br>その問いから生まれたブランド。
-    </h2>
+    <h2 class="rv">おしゃれな家具は、<br>子どもがいると使えない？</h2>
 
     <div class="story-text">
-      <p class="quote rv">「おしゃれな家具がほしいけど、角が尖っていたり、引き出しが勢いよく閉まったり——子どものいる家ではなかなか使えない。」</p>
-      <p class="rv">ある日、知人からそんな悩みを聞いたomonmaの創業者であるデザイナーは、国内外で活躍する木工・造船作家の友人と、保育業界20年の現役保育士に声をかけました。</p>
-      <p class="rv">三人が議論を重ね、試作を繰り返してつくりあげたひとつの家具。それがomonmaの始まりです。ミッドセンチュリーデザインの美しさを参照しながら、子どものいる家庭でも使えるよう安全への工夫を随所に施した家具ブランドとして、omonmaは誕生しました。</p>
+      <p class="rv">角が尖っている。引き出しが勢いよく閉まる。知人のそんな悩みから、omonmaは始まりました。デザイナー、木工・造船作家、保育業界20年の保育士。三人で試作を重ね、ミッドセンチュリーの美しさと子どもへの安全を両立させました。</p>
+      <p class="rv"><a href="about.html" class="more-link">ブランドの話を読む →</a></p>
     </div>
 
     <div class="story-photos">
@@ -68,20 +66,34 @@
   </div>
 </section>
 
+<!-- 子どものための工夫 -->
+<section class="pad safety" id="safety">
+  <div class="wrap">
+    <div class="rv"><div class="label">Safety</div></div>
+    <h2 class="rv">子どものための、5つの工夫。</h2>
+    <!-- 【要確認】実際に採用している工夫だけを残すこと。仕様が確認できない項目は削除する -->
+    <div class="promise-list">
+      <div class="p-item rv"><div class="p-no">01</div><h3>角と縁は、すべて丸く。</h3><p><span class="tbd">【要確認：R◯mm】</span></p></div>
+      <div class="p-item rv"><div class="p-no">02</div><h3>引き出しは、最後にゆっくり閉まる。</h3><p><span class="tbd">【要確認：ソフトクローズの有無】</span></p></div>
+      <div class="p-item rv"><div class="p-no">03</div><h3>指をはさみにくいすき間。</h3><p><span class="tbd">【要確認：◯mm】</span></p></div>
+      <div class="p-item rv"><div class="p-no">04</div><h3>転倒防止の金具つき。</h3><p><span class="tbd">【要確認】</span></p></div>
+      <div class="p-item rv"><div class="p-no">05</div><h3>口に触れても心配の少ない塗料。</h3><p><span class="tbd">【要確認：根拠】</span></p></div>
+    </div>
+  </div>
+</section>
+
 <!-- コレクション -->
 <section class="collection pad" id="items">
   <div class="wrap">
     <div class="rv"><div class="label">Collection</div></div>
     <h2 class="rv">ミッドセンチュリー×<br>子育て家庭向け家具</h2>
-    <p class="rv hint">画像をタップすると、商品一覧を見られます。</p>
   </div>
 
   <div class="gallery-wrap rv">
     <div class="gallery" id="gallery">
-      <figure><a href="products.html" draggable="false"><img src="images/p02.jpg" loading="lazy" decoding="async" draggable="false" alt="籐張りの扉をもつ木のサイドボード"><figcaption><span>Sideboard</span><i>VIEW →</i></figcaption></a></figure>
-      <figure><a href="products.html" draggable="false"><img src="images/p07.jpg" loading="lazy" decoding="async" draggable="false" alt="木とケーンのベンチと椅子"><figcaption><span>Bench</span><i>VIEW →</i></figcaption></a></figure>
-      <figure><a href="products.html" draggable="false"><img src="images/p11.jpg" loading="lazy" decoding="async" draggable="false" alt="引き出しを開けた木のチェスト"><figcaption><span>Chest</span><i>VIEW →</i></figcaption></a></figure>
-      <figure><a href="products.html" draggable="false"><img src="images/p01.jpg" loading="lazy" decoding="async" draggable="false" alt="籐張りの扉をもつ木のサイドボードのあるリビング"><figcaption><span>Sideboard</span><i>VIEW →</i></figcaption></a></figure>
+      <figure><a href="item-chest.html" draggable="false"><img src="images/p11.jpg" loading="lazy" decoding="async" draggable="false" alt="引き出しを開けた木のチェスト"><figcaption><span>チェスト</span><i class="tbd">【要確認】円〜</i></figcaption></a></figure>
+      <figure><a href="item-sideboard.html" draggable="false"><img src="images/p02.jpg" loading="lazy" decoding="async" draggable="false" alt="籐張りの扉をもつ木のサイドボード"><figcaption><span>サイドボード</span><i class="tbd">【要確認】円〜</i></figcaption></a></figure>
+      <figure><a href="item-bench.html" draggable="false"><img src="images/p07.jpg" loading="lazy" decoding="async" draggable="false" alt="木とケーンのベンチと椅子"><figcaption><span>ベンチ</span><i class="tbd">【要確認】円〜</i></figcaption></a></figure>
     </div>
     <div class="gal-ctrl">
       <button class="gal-btn" id="prev" aria-label="前へ">←</button>
@@ -95,7 +107,7 @@
 <section class="collection pad" id="grades" style="padding-top:clamp(40px,6vw,80px)">
   <div class="wrap">
     <div class="rv"><div class="label">Grade</div></div>
-    <h2 class="rv">各製品は三つの仕様から<br>お選びいただけます。</h2>
+    <h2 class="rv">各製品は3つの仕様から<br>お選びいただけます。</h2>
     <p class="rv" style="margin-top:28px;max-width:640px">形もサイズも同じ家具を、素材と仕上げの違いで3グレードご用意しています。ライフスタイルと予算に合わせてお選びください。</p>
   </div>
 
@@ -111,10 +123,10 @@
 
         </div>
       </article>
-      <article class="card rv tilt">
+      <article class="card rv tilt pick-card">
         <div class="ph"><a href="product-solid-craft.html" draggable="false"><img class="fx on" src="images/p13.jpg" decoding="async" draggable="false" alt="Solid Craft仕上げ"><img class="fx" src="images/p02.jpg" loading=lazy decoding="async" draggable="false" alt="Solid Craft仕上げ"><img class="fx" src="images/p01.jpg" loading=lazy decoding="async" draggable="false" alt="Solid Craft仕上げ"></a></div>
         <div class="body">
-          <div class="grade-no">Grade 02</div>
+          <div class="grade-no">Grade 02 <span class="pick">迷ったらこれ</span></div>
           <h3>Solid Craft</h3>
           <span class="tag">無垢材 × ウレタン塗装</span>
           <p>高級感と重厚感あふれる無垢材を使用。傷や歪みが出ても、削って直せる。一生モノというだけでなく、次の世代へ受け継げる家具です。ウレタン塗装で強固に保護し、飲みこぼしや絵の具もさっと拭き取れます。組み接ぎという手法で、より頑丈に仕上げています。</p>
@@ -127,10 +139,26 @@
           <div class="grade-no">Grade 03</div>
           <h3>Heritage Luxury</h3>
           <span class="tag">無垢材 × 蜜蝋ワックス</span>
-          <p>無垢材に天然の蜜蝋ワックスを塗り重ねた、omonma最上位の仕上げ。天然のロウが日常の水滴を心地よく弾き、定期的なお手入れで艶が増して、子どもとともに育つ家具。傷や歪みも削って直せます。組み接ぎという手法で、より頑丈に仕上げています。</p>
+          <p>高級感と重厚感あふれる無垢材に、天然の蜜蝋ワックスを塗り重ねた、omonma最上位の仕上げ。天然のロウが日常の水滴を心地よく弾き、定期的なお手入れで艶が増して、子どもとともに育ちます。傷や歪みが出ても、削って直せる。次の世代へ受け継げる家具です。組み接ぎという手法で、より頑丈に仕上げています。</p>
 
         </div>
       </article>
+    </div>
+
+    <div class="gt-wrap rv">
+      <table class="grade-table">
+        <thead><tr><th></th><th>Daily Standard</th><th class="pick-col">Solid Craft<span class="pick">迷ったらこれ</span></th><th>Heritage Luxury</th></tr></thead>
+        <tbody>
+          <tr><th>素材</th><td>突板合板</td><td class="pick-col">無垢材</td><td>無垢材</td></tr>
+          <tr><th>仕上げ</th><td>ウレタン塗装</td><td class="pick-col">ウレタン塗装</td><td>蜜蝋ワックス</td></tr>
+          <tr><th>水・汚れへの強さ</th><td>強い（水や汚れにも強い）</td><td class="pick-col">強い（飲みこぼしや絵の具もさっと拭き取れる）</td><td>水滴は弾く（完全防水ではありません）</td></tr>
+          <tr><th>傷の補修</th><td><span class="tbd">【要確認】</span></td><td class="pick-col">傷や歪みが出ても、削って直せる</td><td>傷や歪みが出ても、削って直せる</td></tr>
+          <tr><th>お手入れ</th><td><span class="tbd">【要確認】</span></td><td class="pick-col">さっと拭き取る</td><td>定期的に蜜蝋ワックスを塗り込む（艶が増す）</td></tr>
+          <tr><th>構造（組み接ぎ）</th><td><span class="tbd">【要確認】</span></td><td class="pick-col">組み接ぎで、より頑丈に</td><td>組み接ぎで、より頑丈に</td></tr>
+          <tr><th>価格の目安</th><td><span class="tbd">【要確認】</span></td><td class="pick-col"><span class="tbd">【要確認】</span></td><td><span class="tbd">【要確認】</span></td></tr>
+          <tr><th>おすすめの人</th><td><span class="tbd">【要確認】</span></td><td class="pick-col"><span class="tbd">【要確認】</span></td><td><span class="tbd">【要確認】</span></td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -139,8 +167,12 @@
 <section class="craft pad" id="craft">
   <div class="wrap">
     <div class="rv"><div class="label">Craftsmanship</div></div>
-    <h2 class="rv">職人の手が、<br>ひとつひとつに宿る。</h2>
-    <p class="craft-body" id="craftBody">omonmaの家具はすべて、木工作家・造船作家として国内外で活躍する職人が手がける国産家具です。職人が一個ずつ、丁寧につくっています。だからこそ生まれる木の表情と、子どもに渡せる強度があります。</p>
+    <h2 class="rv">舟をつくる職人が、<br>家具をつくる。</h2>
+    <p class="craft-body" id="craftBody">omonmaの家具をつくるのは、国内外で活動する木工作家・造船作家です。水に浮かべても崩れない木の舟の組み方を、子どもがよじ登り、ぶつかる毎日の家具に生かしています。一台ずつ手で仕上げるので、木目も一台ごとに違います。</p>
+    <div class="craft-extra rv">
+      <figure class="boat-fig"><img src="images/boat-placeholder.svg" loading="lazy" decoding="async" alt="職人がつくった木の舟"><figcaption><span class="tbd">【要確認：舟の写真（仮の画像です）】</span></figcaption></figure>
+      <div class="maker-box"><div class="maker-ph">写真</div><p><span class="tbd">【要確認：職人の名前・顔写真】</span></p></div>
+    </div>
   </div>
 </section>
 
@@ -148,7 +180,7 @@
 <section class="pad" id="promise">
   <div class="wrap">
     <div class="rv"><div class="label">Promise</div></div>
-    <h2 class="rv">長く付き合える、<br>安心のサポート体制。</h2>
+    <h2 class="rv">買ったあとも、<br>長く付き合えるように。</h2>
     <div class="promise-list">
       <div class="p-item rv">
         <div class="p-no">01</div>
@@ -158,15 +190,12 @@
       <div class="p-item rv">
         <div class="p-no">02</div>
         <h3>長期メンテナンスサポート</h3>
-        <p>1年以降も有償にて修理・再塗装に対応。定期メンテナンスプランもご用意しています。</p>
+        <p>1年以降も有償にて修理・再塗装に対応。定期メンテナンスプランもご用意しています。<br>定期メンテナンスプランの内容と料金：<span class="tbd">【要確認】</span></p>
       </div>
       <div class="p-item rv">
         <div class="p-no">03</div>
-        <h3>蜜蝋ワックス仕上げ</h3>
-        <div>
-          <p>Heritage Luxuryグレード限定。天然の蜜蝋ワックスで仕上げ。日常の水滴は天然のロウが弾くので、濡れたらサッと拭くだけ。木の風合いを楽しみながら、ご家庭で簡単にお手入れできます。</p>
-          <p class="wnote">※完全防水ではありません。水やお湯を長時間置くと、水じみができることがあります。状態によっては、再塗装で補修できる場合もあります。</p>
-        </div>
+        <h3>納期・配送・設置</h3>
+        <p>ご注文から<span class="tbd">【要確認：◯週間】</span>でお届け。設置まで<span class="tbd">【要確認】</span>。</p>
       </div>
     </div>
   </div>
@@ -176,16 +205,16 @@
 <section class="exp pad" id="experience">
   <div class="wrap">
     <div class="rv"><div class="label">Experience</div></div>
-    <h2 class="rv">工房で、ともにつくる体験。</h2>
+    <h2 class="rv">工房で、家具づくりに触れる。</h2>
     <div class="exp-grid">
       <div class="exp-card rv">
         <h3>工房見学ツアー</h3>
-        <p>職人の仕事場をご案内します。ひとつひとつ丁寧につくられていく、ものづくりの現場を間近でご覧ください。</p>
+        <p>茨城・小文間の工房で、職人の仕事場をご案内します。家具ができていく現場を、間近でご覧ください。</p>
         <span class="note">要予約 / 日程はお問い合わせください</span>
       </div>
       <div class="exp-card rv">
         <h3>蜜蝋ワックス塗装体験</h3>
-        <p>ご購入者様限定、1日1組のプライベート体験。ご自身の手で、お子さんの家具に最初の仕上げを施してください。一生の記憶になります。蜜蝋ワックスは天然素材のみですのでお子様も参加できます。</p>
+        <p>ご購入の方限定・1日1組。お子さんの家具の最後の仕上げを、ご家族の手で。蜜蝋ワックスは天然素材なので、小さなお子さんも一緒に塗れます。</p>
         <span class="note">購入者限定・1日1組 / 要予約</span>
       </div>
     </div>
@@ -193,15 +222,41 @@
   </div>
 </section>
 
+<!-- よくある質問 -->
+<section class="pad faq" id="faq">
+  <div class="wrap">
+    <div class="rv"><div class="label">FAQ</div></div>
+    <h2 class="rv">よくある質問</h2>
+    <div class="faq-list">
+      <details class="rv"><summary>納期はどのくらい？</summary><p><span class="tbd">【要確認】</span></p></details>
+      <details class="rv"><summary>送料はいくら？</summary><p><span class="tbd">【要確認】</span></p></details>
+      <details class="rv"><summary>設置もしてもらえる？</summary><p><span class="tbd">【要確認】</span></p></details>
+      <details class="rv"><summary>支払い方法は？</summary><p><span class="tbd">【要確認】</span></p></details>
+      <details class="rv"><summary>注文後のキャンセルはできる？</summary><p><span class="tbd">【要確認】</span></p></details>
+      <details class="rv"><summary>お手入れの方法は？</summary><p><span class="tbd">【要確認】</span></p></details>
+    </div>
+  </div>
+</section>
+
+<!-- 最後のボタン -->
+<section class="cta-band" id="cta">
+  <div class="wrap rv">
+    <h2>サイズと金額を、3分で確かめる。</h2>
+    <a href="simulator.html" class="btn magnetic">シミュレーションする <span class="arr">→</span></a>
+    <p class="cta-sub"><a href="https://omonma.jp/contact.html">相談する</a></p>
+  </div>
+</section>
+
 <footer>
   <div class="wrap rv">
     <div class="logo foot-logo"><img class="lg" src="images/logo-white.png" alt="omonma"></div>
-    <p class="f-tag">子供と育つ、一生モノ家具を。</p>
+    <p class="f-tag">子どもと育つ、一生モノの家具。</p>
     <div class="f-links">
-      <a href="index.html">omonmaトップ</a>
-    <a href="products.html">商品一覧</a>
+      <a href="products.html">商品一覧</a>
       <a href="about.html">ブランドについて</a>
       <a href="https://omonma.jp/contact.html">お問い合わせ</a>
+      <a href="tokushoho.html">特定商取引法に基づく表記</a>
+      <a href="privacy.html">プライバシーポリシー</a>
     </div>
     <p class="copy">© 2026 omonma. All rights reserved.</p>
   </div>
